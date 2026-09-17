@@ -1,0 +1,18 @@
+node_modules/
+.env
+coverage/
+*.log
+dist/
+.DS_Store
+
+# Terraform
+terraform/.terraform/
+terraform/.terraform.lock.hcl
+terraform/terraform.tfstate
+terraform/terraform.tfstate.*
+terraform/*.tfplan
+terraform/terraform.tfvars
+
+# Frontend build output
+frontend/dist/
+frontend/node_modules/

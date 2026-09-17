@@ -1,0 +1,43 @@
+{
+  "name": "ecommerce-api",
+  "version": "1.0.0",
+  "description": "API RESTful de e-commerce com arquitetura Service Layer, PostgreSQL e Redis",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "migrate": "node src/database/migrations.js",
+    "seed": "node src/database/seeds.js",
+    "test": "jest --forceExit --detectOpenHandles",
+    "test:unit": "jest tests/unit --forceExit --detectOpenHandles",
+    "test:integration": "jest tests/integration --forceExit --detectOpenHandles",
+    "test:coverage": "jest --coverage --forceExit --detectOpenHandles"
+  },
+  "keywords": [
+    "ecommerce",
+    "api",
+    "nodejs",
+    "express",
+    "postgresql",
+    "redis"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.0.0",
+    "ioredis": "^5.4.2",
+    "joi": "^17.13.3",
+    "pg": "^8.13.1",
+    "prom-client": "^15.1.3",
+    "swagger-jsdoc": "^6.3.0",
+    "swagger-ui-express": "^5.0.1",
+    "winston": "^3.17.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^7.0.0"
+  }
+}
