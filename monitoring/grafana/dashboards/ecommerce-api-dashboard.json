@@ -1,0 +1,86 @@
+{
+  "title": "E-Commerce API - Observabilidade",
+  "uid": "ecommerce-api",
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "5s",
+  "time": { "from": "now-15m", "to": "now" },
+  "panels": [
+    {
+      "id": 1,
+      "title": "Requisições por segundo",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "targets": [
+        {
+          "expr": "sum(rate(http_requests_total{job=\"ecommerce-api\"}[1m])) by (route)",
+          "legendFormat": "{{route}}"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Tempo de resposta (p95)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{job=\"ecommerce-api\"}[5m])) by (le, route))",
+          "legendFormat": "p95 {{route}}"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "s" }, "overrides": [] }
+    },
+    {
+      "id": 3,
+      "title": "Taxa de erros (status >= 500)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "targets": [
+        {
+          "expr": "sum(rate(http_requests_total{job=\"ecommerce-api\", status_code=~\"5..\"}[1m]))",
+          "legendFormat": "erros/s"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Uso de CPU (segundos/segundo)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "targets": [
+        {
+          "expr": "rate(process_cpu_seconds_total{job=\"ecommerce-api\"}[1m])",
+          "legendFormat": "cpu"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Memória residente (RSS)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 16 },
+      "targets": [
+        {
+          "expr": "process_resident_memory_bytes{job=\"ecommerce-api\"}",
+          "legendFormat": "memória"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "bytes" }, "overrides": [] }
+    },
+    {
+      "id": 6,
+      "title": "Event loop lag (Node.js)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 16 },
+      "targets": [
+        {
+          "expr": "nodejs_eventloop_lag_seconds{job=\"ecommerce-api\"}",
+          "legendFormat": "lag"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "s" }, "overrides": [] }
+    }
+  ]
+}
