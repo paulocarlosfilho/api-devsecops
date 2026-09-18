@@ -110,6 +110,7 @@ jobs:
           install-cli: "true"
         env:
           DISABLE_EVENTS: '1'
+          LOCALSTACK_ACKNOWLEDGE_ACCOUNT_REQUIREMENT: '1'
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
