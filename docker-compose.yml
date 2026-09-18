@@ -52,7 +52,7 @@ services:
   # --- APLICAÇÕES E MICROSSERVIÇOS ---
   api:
     build:
-      context: ./frontend
+      context: .
       dockerfile: Dockerfile
     image: ${DOCKERHUB_USERNAME:-local}/aponti-api:latest
     container_name: aponti-api
