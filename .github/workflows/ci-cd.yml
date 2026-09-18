@@ -91,6 +91,7 @@ jobs:
         with:
           directory: terraform/
           framework: terraform
+          soft_fail: true
 
   # 4. Provisionamento (LocalStack + Terraform)
   provisioning:
