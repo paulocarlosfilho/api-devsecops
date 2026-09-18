@@ -17,7 +17,7 @@ via Terraform + LocalStack e observabilidade com Prometheus + Grafana.
                                          │  Prometheus  │◀────▶│ Grafana  │
                                          └──────────────┘      └──────────┘
 
-  terraform/  ──▶ LocalStack (VPC, subnet, security group, EC2, bucket S3)
+  terraform/  ──▶ LocalStack (EC2 e bucket S3)
   .github/workflows/ ──▶ build & push das imagens para o Docker Hub
 ```
 
