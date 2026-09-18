@@ -107,8 +107,9 @@ jobs:
         with:
           services: "s3,ec2"
           version: "latest"
+          install-cli: "true"
         env:
-          LOCALSTACK_AUTH_TOKEN: ${{ secrets.LOCALSTACK_AUTH_TOKEN }}
+          DISABLE_EVENTS: '1'
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
