@@ -14,7 +14,6 @@ resource "aws_s3_bucket_versioning" "artifacts" {
   }
 }
 
-# 1. Mapeia os arquivos do projeto (sobe um nível para pegar a raiz)
 locals {
   api_files = {
     for file in fileset("${path.module}/..", "**") :
@@ -33,7 +32,6 @@ locals {
   }
 }
 
-# 2. Faz o upload de cada arquivo para o S3 no LocalStack
 resource "aws_s3_object" "api_files" {
   for_each = local.api_files
 
@@ -41,16 +39,17 @@ resource "aws_s3_object" "api_files" {
   key    = each.value.key
   source = each.value.source
 
+  # Trata a extensão usando split para evitar erros em arquivos sem ponto (ex: Dockerfile)
   content_type = lookup(
     {
-      ".html" = "text/html"
-      ".css"  = "text/css"
-      ".js"   = "application/javascript"
-      ".json" = "application/json"
-      ".png"  = "image/png"
-      ".jpg"  = "image/jpeg"
+      "html" = "text/html"
+      "css"  = "text/css"
+      "js"   = "application/javascript"
+      "json" = "application/json"
+      "png"  = "image/png"
+      "jpg"  = "image/jpeg"
     },
-    try(lower(regex("\\.[^.]+$", each.value.key)), ""),
+    lower(element(split(".", each.value.key), length(split(".", each.value.key)) - 1)),
     "application/octet-stream"
   )
 
