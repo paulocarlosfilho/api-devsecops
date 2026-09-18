@@ -105,9 +105,9 @@ jobs:
       - name: Start LocalStack
         uses: LocalStack/setup-localstack@v0.2.2
         with:
-          services: "s3,ec2"
-          version: "latest"
-          install-cli: "true"
+          image-tag: "latest"
+          install-awslocal: "true"
+          use-pro: "false"
         env:
           DISABLE_EVENTS: '1'
           LOCALSTACK_ACKNOWLEDGE_ACCOUNT_REQUIREMENT: '1'
