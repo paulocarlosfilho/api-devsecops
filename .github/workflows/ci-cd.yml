@@ -102,15 +102,15 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Start LocalStack
-        uses: LocalStack/setup-localstack@v0.2.2
-        with:
-          image-tag: '3.0.0'
-          install-awslocal: "true"
-          use-pro: "false"
-        env:
-          DISABLE_EVENTS: '1'
-          LOCALSTACK_ACKNOWLEDGE_ACCOUNT_REQUIREMENT: '1'
+      - name: Start LocalStack via Docker
+        run: |
+          docker run -d \
+            --name localstack \
+            -p 4566:4566 \
+            -e SERVICES=s3,ec2 \
+            localstack/localstack:3.0.0
+          
+          sleep 15
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
