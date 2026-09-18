@@ -1,10 +1,10 @@
-name: DevSecOps Pipeline - Aponti Stack
+name: DevSecOps Pipeline - API
 
 on:
   push:
-    branches: [ develop, main ]
+    branches: [ main, develop ]
   pull_request:
-    branches: [ develop, main ]
+    branches: [ main, develop ]
 
 jobs:
   # 1. Lint e Proteção de Segredos
@@ -50,9 +50,9 @@ jobs:
       - name: Run Unit Tests
         run: npm run test:unit --if-present
 
-  # 3. Pull da Imagem do Docker Hub & Scans (Quality Gate)
+  # 3. Build, Push & Scans de Segurança (Trivy/Checkov)
   pull-and-scan:
-    name: Pull da Imagem & Scans (Trivy/Checkov)
+    name: Build, Push & Scans (Trivy/Checkov)
     needs: build-and-sast
     runs-on: ubuntu-latest
     steps:
@@ -65,14 +65,23 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-      - name: Pull Image from Docker Hub
-        run: |
-          docker pull paulocarlosfilho/aponti-api:latest
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+           paulocarlosfilho/aponti-api-fap-desafio-final-pratico:latest
+           paulocarlosfilho/aponti-api-fap-desafio-final-pratico:1.0.1
 
       - name: Run Trivy vulnerability scanner on Docker Image
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'paulocarlosfilho/aponti-api:latest'
+          image-ref: 'paulocarlosfilho/aponti-api-fap-desafio-final-pratico:1.0.1'
           format: 'table'
           exit-code: '0'
           severity: 'CRITICAL,HIGH'
