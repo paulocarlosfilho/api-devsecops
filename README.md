@@ -69,12 +69,12 @@ Para derrubar tudo: `docker compose down -v`.
 
 As imagens já estão publicadas e públicas:
 
-- **API**: [hrvton/ecommerce-api](https://hub.docker.com/r/hrvton/ecommerce-api)
-- **Frontend**: [hrvton/ecommerce-frontend](https://hub.docker.com/r/hrvton/ecommerce-frontend)
+- **API**: [<usuario do dockerhub>/ecommerce-api](https://hub.docker.com/r/hrvton/ecommerce-api)
+- **Frontend**: [<usuario do dockerhub>/ecommerce-frontend](https://hub.docker.com/r/hrvton/ecommerce-frontend)
 
 ```bash
-docker pull hrvton/ecommerce-api:latest
-docker pull hrvton/ecommerce-frontend:latest
+docker pull <usuario do dockerhub>/ecommerce-api:latest
+docker pull <usuario do dockerhub>/ecommerce-frontend:latest
 ```
 
 Para publicar manualmente uma nova versão (fora da pipeline):
