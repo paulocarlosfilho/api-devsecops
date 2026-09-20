@@ -93,8 +93,8 @@ Arquivo: `.github/workflows/ci-cd.yml`. A cada `push` na branch `main`:
 
 1. Roda os testes unitários da API (`npm run test:unit`).
 2. Se os testes passarem, builda e publica no Docker Hub:
-   - `hrvton/ecommerce-api:latest` e `:<sha do commit>`
-   - `hrvton/ecommerce-frontend:latest` e `:<sha do commit>`
+   - `<usuario do dockerhub>/ecommerce-api:latest` e `:<sha do commit>`
+   - `<usuario do dockerhub>/ecommerce-frontend:latest` e `:<sha do commit>`
 
 ### Configuração necessária no GitHub
 
