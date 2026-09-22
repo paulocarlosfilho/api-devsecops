@@ -17,7 +17,7 @@ via Terraform + LocalStack e observabilidade com Prometheus + Grafana.
                                          │  Prometheus  │◀────▶│ Grafana  │
                                          └──────────────┘      └──────────┘
 
-  terraform/  ──▶ LocalStack (VPC, subnet, security group, EC2, bucket S3)
+  terraform/  ──▶ LocalStack (EC2 e bucket S3)
   .github/workflows/ ──▶ build & push das imagens para o Docker Hub
 ```
 
@@ -69,20 +69,20 @@ Para derrubar tudo: `docker compose down -v`.
 
 As imagens já estão publicadas e públicas:
 
-- **API**: [hrvton/ecommerce-api](https://hub.docker.com/r/hrvton/ecommerce-api)
-- **Frontend**: [hrvton/ecommerce-frontend](https://hub.docker.com/r/hrvton/ecommerce-frontend)
+- **API**: [<usuario do dockerhub>/ecommerce-api](https://hub.docker.com/r/hrvton/ecommerce-api)
+- **Frontend**: [<usuario do dockerhub>/ecommerce-frontend](https://hub.docker.com/r/hrvton/ecommerce-frontend)
 
 ```bash
-docker pull hrvton/ecommerce-api:latest
-docker pull hrvton/ecommerce-frontend:latest
+docker pull <usuario do dockerhub>/ecommerce-api:latest
+docker pull <usuario do dockerhub>/ecommerce-frontend:latest
 ```
 
 Para publicar manualmente uma nova versão (fora da pipeline):
 
 ```bash
 docker login
-docker build -t hrvton/ecommerce-api:latest .
-docker build -t hrvton/ecommerce-frontend:latest ./frontend
+docker build -t <usuario do dockerhub>/ecommerce-api:latest .
+docker build -t <usuario do dockerhub>/ecommerce-frontend:latest ./frontend
 docker push hrvton/ecommerce-api:latest
 docker push hrvton/ecommerce-frontend:latest
 ```
@@ -93,8 +93,8 @@ Arquivo: `.github/workflows/ci-cd.yml`. A cada `push` na branch `main`:
 
 1. Roda os testes unitários da API (`npm run test:unit`).
 2. Se os testes passarem, builda e publica no Docker Hub:
-   - `hrvton/ecommerce-api:latest` e `:<sha do commit>`
-   - `hrvton/ecommerce-frontend:latest` e `:<sha do commit>`
+   - `<usuario do dockerhub>/ecommerce-api:latest` e `:<sha do commit>`
+   - `<usuario do dockerhub>/ecommerce-frontend:latest` e `:<sha do commit>`
 
 ### Configuração necessária no GitHub
 
@@ -105,6 +105,16 @@ secret**:
 |----------------------|-----------------------------------------------------------|
 | `DOCKERHUB_USERNAME` | seu usuário do Docker Hub                                  |
 | `DOCKERHUB_TOKEN`    | um Access Token gerado em Docker Hub → Account Settings → Security |
+
+## 🛡️ Benefícios do CI/CD com DevSecOps
+
+A integração dessas ferramentas no GitHub Actions garante a segurança em todas as camadas da aplicação (Shift Left Security), prevenindo falhas antes que cheguem a produção:
+
+* **Secret Scanning (Gitleaks)**: Evita o vazamento acidental de chaves de API, senhas e tokens de acesso no repositório público ou privado, eliminando o risco de comprometimento de credenciais na nuvem.
+* **SAST - Static Application Security Testing (Snyk)**: Analisa o código Node.js e suas dependências em tempo de desenvolvimento, identificando vulnerabilidades de código (como injeções e falhas de lógica) e bibliotecas desatualizadas com falhas conhecidas.
+* **Container Scanning (Trivy)**: Garante que a imagem Docker construída esteja livre de vulnerabilidades de sistema operacional e pacotes base (CVEs de severidade High/Critical), reduzindo a superfície de ataque dos contêineres.
+* **IaC Scanning (Checkov)**: Audita os arquivos do Terraform antes do provisionamento no LocalStack/AWS, prevenindo erros de infraestrutura como buckets S3 públicos, portas desnecessariamente abertas e falta de criptografia.
+* **DAST - Dynamic Application Security Testing (OWASP ZAP)**: Simula ataques reais contra a API em execução no ambiente de Staging, validando se a aplicação responde com segurança a vetores de ataque comuns (como OWASP Top 10) em tempo de execução.
 
 ## 4. Infraestrutura como código (Terraform + LocalStack)
 

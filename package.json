@@ -1,6 +1,6 @@
 {
   "name": "ecommerce-api",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "API RESTful de e-commerce com arquitetura Service Layer, PostgreSQL e Redis",
   "main": "src/server.js",
   "scripts": {
@@ -39,5 +39,9 @@
   "devDependencies": {
     "jest": "^29.7.0",
     "supertest": "^7.0.0"
+  },
+
+  "overrides": {
+    "@apidevtools/json-schema-ref-parser": "^15.3.6"
   }
 }

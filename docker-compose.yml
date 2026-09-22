@@ -1,7 +1,21 @@
+version: '3.8'
+
+networks:
+  aponti-net:
+    driver: bridge
+
+volumes:
+  pgdata:
+  redisdata:
+  prometheusdata:
+  grafanadata:
+  localstackdata:
+
 services:
+  # --- BANCOS DE DADOS E CACHE ---
   postgres:
     image: postgres:16-alpine
-    container_name: ecommerce-postgres
+    container_name: aponti-postgres
     restart: unless-stopped
     ports:
       - "5432:5432"
@@ -17,11 +31,11 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - ecommerce-net
+      - aponti-net
 
   redis:
     image: redis:7-alpine
-    container_name: ecommerce-redis
+    container_name: aponti-redis
     restart: unless-stopped
     ports:
       - "6379:6379"
@@ -33,14 +47,15 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - ecommerce-net
+      - aponti-net
 
+  # --- APLICAÇÕES E MICROSSERVIÇOS ---
   api:
     build:
       context: .
       dockerfile: Dockerfile
-    image: ${DOCKERHUB_USERNAME:-local}/ecommerce-api:latest
-    container_name: ecommerce-api
+    image: ${DOCKERHUB_USERNAME:-local}/aponti-api:latest
+    container_name: aponti-api
     restart: unless-stopped
     ports:
       - "3000:3000"
@@ -60,25 +75,26 @@ services:
       redis:
         condition: service_healthy
     networks:
-      - ecommerce-net
+      - aponti-net
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    image: ${DOCKERHUB_USERNAME:-local}/ecommerce-frontend:latest
-    container_name: ecommerce-frontend
+    image: ${DOCKERHUB_USERNAME:-local}/aponti-frontend:latest
+    container_name: aponti-frontend
     restart: unless-stopped
     ports:
       - "8080:80"
     depends_on:
       - api
     networks:
-      - ecommerce-net
+      - aponti-net
 
+  # --- OBSERVABILIDADE (PROMETHEUS & GRAFANA) ---
   prometheus:
     image: prom/prometheus:v2.54.1
-    container_name: ecommerce-prometheus
+    container_name: aponti-prometheus
     restart: unless-stopped
     volumes:
       - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
@@ -88,11 +104,11 @@ services:
     depends_on:
       - api
     networks:
-      - ecommerce-net
+      - aponti-net
 
   grafana:
     image: grafana/grafana:11.2.0
-    container_name: ecommerce-grafana
+    container_name: aponti-grafana
     restart: unless-stopped
     environment:
       GF_SECURITY_ADMIN_USER: admin
@@ -107,11 +123,12 @@ services:
     depends_on:
       - prometheus
     networks:
-      - ecommerce-net
+      - aponti-net
 
+  # --- SIMULADOR DE NUVEM (LOCALSTACK) ---
   localstack:
     image: localstack/localstack:3.7
-    container_name: ecommerce-localstack
+    container_name: aponti-localstack
     restart: unless-stopped
     environment:
       SERVICES: s3,ec2
@@ -121,15 +138,4 @@ services:
     volumes:
       - localstackdata:/var/lib/localstack
     networks:
-      - ecommerce-net
-
-networks:
-  ecommerce-net:
-    driver: bridge
-
-volumes:
-  pgdata:
-  redisdata:
-  prometheusdata:
-  grafanadata:
-  localstackdata:
+      - aponti-net
