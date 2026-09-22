@@ -1,6 +1,6 @@
 {
   "name": "ecommerce-api",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "API RESTful de e-commerce com arquitetura Service Layer, PostgreSQL e Redis",
   "main": "src/server.js",
   "scripts": {
